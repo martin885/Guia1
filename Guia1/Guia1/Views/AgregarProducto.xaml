@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             xmlns:local="clr-namespace:Guia1.Behaviors"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="Guia1.Views.AgregarProducto" 
+             Title="Productos y Sub-Productos">
+
+    <ScrollView>
+        <StackLayout >
+            <StackLayout Orientation="Horizontal" 
+                        Margin="0,0,0,10" >
+                <Image Source="Diagrama.png" Scale="0.5"
+                       VerticalOptions="CenterAndExpand"
+                       HorizontalOptions="CenterAndExpand"/>
+            </StackLayout>
+            <ListView ItemsSource="{Binding ProductoPrincipal}" HasUnevenRows="True" SelectedItem="{Binding ItemSeleccionado,Mode=TwoWay}">
+                <ListView.Behaviors>
+                    <local:ListItemSelected  Command="{Binding ItemEvento,Mode=TwoWay}"/>
+                </ListView.Behaviors>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout>
+                                <Label Text="{Binding ProductoPrincipalId}"/>
+                                <Label Text="{Binding Nombre}"/>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+          
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Guia1.Behaviors"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="Guia1.Views.ProdSubDefinir"
+             Title="Definir Producto">
+    
+    <ContentPage.Content >
+        <StackLayout >
+            <Entry Placeholder="Ingresar Producto Principal" Text="{Binding NombreProducto,Mode=TwoWay}" />
+            <StackLayout Orientation="Horizontal" >
+                <Label Text="Ingresar Cantidad de Sub-Productos"/>
+                <Entry Text="{Binding CantP,Mode=TwoWay}" Keyboard="Numeric" IsEnabled="{Binding IsEnable}" HorizontalOptions="FillAndExpand">
+                <Entry.Behaviors>
+                    <local:CompletedBehavior  Command="{Binding Complete}"/>
+                </Entry.Behaviors>
+            </Entry>
+            </StackLayout>
+            <ListView ItemsSource="{Binding ListaProducto}" HasUnevenRows="True" >
+                <ListView.ItemTemplate  >
+                    <DataTemplate >
+                        <ViewCell>
+                            <StackLayout>
+                                <Label Text="{Binding ProductoId}"/>
+                                <Label Text="{Binding ProductoPrincipalId}"/>
+                                <Entry Text="{Binding Nombres, Mode=TwoWay}" Placeholder="Ingresar Nombre Sub-Producto"/>
+                                <StackLayout Orientation="Horizontal" >
+                                    <Label Text="Ingresar Cantidad de dicho Sub-Producto:"/>
+                                    <Entry Text="{Binding Cantidad,Mode=TwoWay}" Placeholder="Cantidad" Keyboard="Numeric"/>
+                                  
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal" >
+                                    <Label Text="Posición del Sub-Producto:"/>
+                                    <Entry Text="{Binding Clasificacion,Mode=TwoWay}" Placeholder="Ejemplo:1.1.2"/>
+                                </StackLayout>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+                <Button Text="Volver" Command="{Binding NavigateCommand}" />
+             <Button Text="Guardar" Command="{Binding GuardarCommand}" BackgroundColor="Green" TextColor="White"/>
+                <Button Text="Borrar Todo" Command="{Binding BorrarCommand}" BackgroundColor="IndianRed" TextColor="White"/>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+    
+</ContentPage>
