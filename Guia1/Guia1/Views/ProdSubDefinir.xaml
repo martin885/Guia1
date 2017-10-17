@@ -4,47 +4,76 @@
              xmlns:local="clr-namespace:Guia1.Behaviors"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              prism:ViewModelLocator.AutowireViewModel="True"
-             x:Class="Guia1.Views.ProdSubDefinir"
-             Title="Definir Producto">
-    
+             x:Class="Guia1.Views.ProdSubDefinir">
+    <!--Página para agregar un producto con sus subproductos-->
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Guardar" Icon="Save32.png" Command="{Binding GuardarCommand}" Order="Primary"/>
+        <ToolbarItem Text="Borrar" Icon="Delete32.png" Command="{Binding BorrarCommand}" Order="Primary"/>
+    </ContentPage.ToolbarItems>
     <ContentPage.Content >
         <StackLayout >
-            <Entry Placeholder="Ingresar Producto Principal" Text="{Binding NombreProducto,Mode=TwoWay}" />
+            <Label Text="Agregar Producto"
+                   FontSize="Large"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   Margin="10"/>
+            <Entry Placeholder="Producto Principal" Text="{Binding NombreProducto,Mode=TwoWay}" />
             <StackLayout Orientation="Horizontal" >
-                <Label Text="Ingresar Cantidad de Sub-Productos"/>
+                <Label Text="Cantidad de Sub-Productos"/>
                 <Entry Text="{Binding CantP,Mode=TwoWay}" Keyboard="Numeric" IsEnabled="{Binding IsEnable}" HorizontalOptions="FillAndExpand">
-                <Entry.Behaviors>
-                    <local:CompletedBehavior  Command="{Binding Complete}"/>
-                </Entry.Behaviors>
-            </Entry>
+                    <Entry.Behaviors>
+                        <local:CompletedBehavior  Command="{Binding Complete}"/>
+                    </Entry.Behaviors>
+                </Entry>
             </StackLayout>
-            <ListView ItemsSource="{Binding ListaProducto}" HasUnevenRows="True" >
-                <ListView.ItemTemplate  >
+            <ListView ItemsSource="{Binding ListaProducto}" 
+                      HasUnevenRows="True" 
+                      Margin="10"
+                      x:Name="lista">
+                <ListView.ItemTemplate >
                     <DataTemplate >
-                        <ViewCell>
-                            <StackLayout>
-                                <Label Text="{Binding ProductoId}"/>
-                                <Label Text="{Binding ProductoPrincipalId}"/>
-                                <Entry Text="{Binding Nombres, Mode=TwoWay}" Placeholder="Ingresar Nombre Sub-Producto"/>
-                                <StackLayout Orientation="Horizontal" >
-                                    <Label Text="Ingresar Cantidad de dicho Sub-Producto:"/>
-                                    <Entry Text="{Binding Cantidad,Mode=TwoWay}" Placeholder="Cantidad" Keyboard="Numeric"/>
-                                  
+                        <ViewCell >
+                            <StackLayout Margin="0,0,0,20"
+                                         Padding="20" >
+                                <Entry Text="{Binding Nombres, Mode=TwoWay}" 
+                                       Placeholder="Nombre Sub-Producto"
+                                       IsEnabled="{Binding IsEnabledNombre}">
+                                </Entry>
+                                <Entry Text="{Binding Cantidad, Mode=TwoWay}"
+                                       Placeholder="Cantidad de este Sub-Producto"/>
+                                <Entry Text="{Binding InventarioInicial}"
+                                       Placeholder="Inventario Inicial"/>
+                                <Entry Text="{Binding TiempoFabricacion, Mode=TwoWay}" 
+                                       Placeholder="Tiempo de Fabricación en días"/>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Depende de: "
+                                           HorizontalOptions="Start"/>
+                                    <Entry  Text="{Binding Dependencia,Mode=TwoWay}" 
+                                            HorizontalOptions="FillAndExpand"
+                                            IsEnabled="{Binding IsEnabledDependencia}"/>
                                 </StackLayout>
-                                <StackLayout Orientation="Horizontal" >
-                                    <Label Text="Posición del Sub-Producto:"/>
-                                    <Entry Text="{Binding Clasificacion,Mode=TwoWay}" Placeholder="Ejemplo:1.1.2"/>
-                                </StackLayout>
+                                <!--<StackLayout Orientation="Horizontal">
+                                    <Label Text="Clasificación : "
+                                           HorizontalOptions="Start"/>
+                                <Entry Text="{Binding Clasificacion, Mode=TwoWay}"
+                                           Placeholder="Clasificación"
+                                           HorizontalOptions="FillAndExpand"/>
+                                </StackLayout>-->
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
-                <Button Text="Volver" Command="{Binding NavigateCommand}" />
-             <Button Text="Guardar" Command="{Binding GuardarCommand}" BackgroundColor="Green" TextColor="White"/>
-                <Button Text="Borrar Todo" Command="{Binding BorrarCommand}" BackgroundColor="IndianRed" TextColor="White"/>
-            </StackLayout>
+            <!--<StackLayout HorizontalOptions="FillAndExpand"
+                         VerticalOptions="EndAndExpand"
+                         Padding="20">
+                <Button Text="Guardar" Command="{Binding GuardarCommand}" 
+                     BackgroundColor="PaleGreen"/>
+                <Button Text="Volver" Command="{Binding NavigateCommand}" 
+                     BackgroundColor="PaleTurquoise"/>
+
+            </StackLayout>-->
+
         </StackLayout>
     </ContentPage.Content>
     

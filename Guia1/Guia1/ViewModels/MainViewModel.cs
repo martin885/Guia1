@@ -11,6 +11,7 @@ using Xamarin.Forms;
 using Prism.Mvvm;
 using Prism.Commands;
 using Prism.Navigation;
+using Guia1.Services;
 
 namespace Guia1.ViewModels
 
@@ -18,30 +19,42 @@ namespace Guia1.ViewModels
   public  class MainViewModel :BindableBase, INotifyPropertyChanged
 
     {
+#pragma warning disable CS0108 // El miembro oculta el miembro heredado. Falta una contraseña nueva
         public event PropertyChangedEventHandler PropertyChanged;
-
+#pragma warning restore CS0108 // El miembro oculta el miembro heredado. Falta una contraseña nueva
+        DataService dataservice;
         INavigationService _navigationService;
+        public bool Revisar { get; set; }
 
-        public DelegateCommand NavigateAgregarCommand { get; private set; }
+        public DelegateCommand NavigateCalcularCommand { get; private set; }
         public DelegateCommand NavigateProductoCommand { get; private set; }
-
+        public DelegateCommand RevisarCommand { get; private set; }
 
         public MainViewModel(INavigationService navigationService)
         {
             _navigationService = navigationService;
-            NavigateAgregarCommand = new DelegateCommand(NavigateAgregar);
+            NavigateCalcularCommand = new DelegateCommand(NavigateAgregar);
             NavigateProductoCommand = new DelegateCommand(NavigateProducto);
+            RevisarCommand = new DelegateCommand(NavigateRevisar);
+            dataservice = new DataService();
         }
 
-        private void NavigateProducto()
+        private async void NavigateRevisar()
         {
-         _navigationService.NavigateAsync("ProdSubDefinir");
+            var parametros = new NavigationParameters();
+            parametros.Add("Revisar", Revisar=true);
+            await _navigationService.NavigateAsync("AgregarProducto",parametros);
         }
 
-        private void NavigateAgregar()
+        private async void NavigateProducto()
+        {
+        await  _navigationService.NavigateAsync("ProdSubDefinir");
+        }
+
+        private async void NavigateAgregar()
         {
          
-         _navigationService.NavigateAsync("AgregarProducto");
+        await _navigationService.NavigateAsync("AgregarProducto");
 
         }
 

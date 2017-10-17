@@ -9,12 +9,12 @@ using Xamarin.Forms.Xaml;
 
 namespace Guia1.Views
 {
-    
-    public partial class ProductoEditar : ContentPage
-    {
-        public ProductoEditar()
-        {
-            InitializeComponent();
-        }
-    }
+ 
+    public partial class HojaCalculo : ContentPage
+	{
+		public HojaCalculo()
+		{
+			InitializeComponent ();
+		}
+	}
 }

@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Guia1.Views;
-using Xamarin.Forms;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using Guia1.Services;
@@ -17,13 +11,15 @@ using System.Collections.ObjectModel;
 
 namespace Guia1.ViewModels
 {
-    public class AgregarProductoViewModel :BindableBase, INotifyPropertyChanged
+    public class AgregarProductoViewModel : BindableBase, INotifyPropertyChanged, INavigationAware
     {
+#pragma warning disable CS0108 // El miembro oculta el miembro heredado. Falta una contraseña nueva
         public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore CS0108 // El miembro oculta el miembro heredado. Falta una contraseña nueva
         DialogService dialogService;
         public DataService dataService;
 
-        public ProductoPrincipal productoPrincipal { get; set; }
+        #region Prodpiedades
 
         public ObservableCollection<ProductoPrincipal> _productoPrincipal;
         public ObservableCollection<ProductoPrincipal> ProductoPrincipal
@@ -74,43 +70,106 @@ namespace Guia1.ViewModels
                 }
             }
         }
+        public bool Revisar { get; private set; }
+        #endregion
 
+        #region Commands
         public ICommand ItemEvento
         {
-        get
+            get
             {
                 return new RelayCommand(Selected);
             }
 
         }
-          
-        private async void Selected()
+
+
+
+        private void Selected()
         {
-            
-            NavigateProdDefinir( ItemSeleccionado);
+
+            NavigateProdDefinir(ItemSeleccionado);
 
         }
+        #endregion
+        #region Constructors
         public AgregarProductoViewModel(INavigationService navigationService)
         {
-          
+
             dialogService = new DialogService();
             dataService = new DataService();
             _navigationService = navigationService;
             NavigateCommand = new DelegateCommand(Navigate);
-            ProductoPrincipal = new ObservableCollection<ProductoPrincipal>(dataService.Get<ProductoPrincipal>(true));
+
         }
 
+        #endregion
+        #region Navegación 
         private async void Navigate()
         {
-         await   _navigationService.GoBackAsync();
+            await _navigationService.GoBackAsync();
         }
         private async void NavigateProdDefinir(ProductoPrincipal ItemSeleccionado)
         {
             var parametros = new NavigationParameters();
-            
-            parametros.Add("Item",ItemSeleccionado);
-          await  _navigationService.NavigateAsync("ProductoEditar", parametros);
+            if (Revisar == false)
+            {
+                parametros.Add("Item", ItemSeleccionado);
+            }
+            else
+            {
+                parametros.Add("Revisar", ItemSeleccionado);
+            }
+            await _navigationService.NavigateAsync("HojaCalculo", parametros);
         }
-    }
+        #endregion
 
+        #region Pase de Parámetros
+        public void OnNavigatedFrom(NavigationParameters parameters)
+        {
+
+        }
+
+        public void OnNavigatedTo(NavigationParameters parameters)
+        {
+
+            if (parameters.ContainsKey("Revisar"))
+            {
+                Revisar = (bool)parameters["Revisar"];
+            }
+
+            if (Revisar != true)
+            {
+
+                ProductoPrincipal = new ObservableCollection<ProductoPrincipal>(dataService.Get<ProductoPrincipal>(true));
+            }
+            else
+            {
+                ProductoPrincipal = new ObservableCollection<ProductoPrincipal>();
+
+
+                foreach (var productoPrincipal in dataService.Get<ProductoPrincipal>(true))
+                {
+                    {
+                        if (productoPrincipal.Calculo == true)
+                        {
+                            ProductoPrincipal.Add(productoPrincipal);
+                        }
+
+                    }
+                }
+
+            }
+        }
+
+
+
+
+        public void OnNavigatingTo(NavigationParameters parameters)
+        {
+
+        }
+        #endregion
+
+    }
 }

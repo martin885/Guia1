@@ -19,12 +19,31 @@ namespace Guia1.ViewModels
 {
    public class ProductoEditarViewModel: BindableBase, INotifyPropertyChanged,INavigationAware
     {
+#pragma warning disable CS0108 // El miembro oculta el miembro heredado. Falta una contraseña nueva
         public event PropertyChangedEventHandler PropertyChanged;
-
+#pragma warning restore CS0108 // El miembro oculta el miembro heredado. Falta una contraseña nueva
+        DialogService dialogService;
+        public DataService dataService;
         INavigationService _navigationService;
 
         public object Title { get;  set; }
 
+        public DelegateCommand NavigateCommand { get; private set; }
+
+        #region Propiedades
+        public ProductoA _itemSeleccionado;
+        public ProductoA ItemSeleccionado
+        {
+            get { return _itemSeleccionado; }
+            set
+            {
+                if (_itemSeleccionado != value)
+                {
+                    _itemSeleccionado = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemSeleccionado)));
+                }
+            }
+        }
         public ProductoPrincipal _seleccionProducto;
         public ProductoPrincipal SeleccionProducto
         {
@@ -53,8 +72,24 @@ namespace Guia1.ViewModels
             }
 
         }
+
+        public string _clasificacion;
+        public string Clasificacion
+        {
+            get { return _clasificacion; }
+            set
+            {
+                if (_clasificacion != value)
+                {
+                    _clasificacion = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Clasificacion)));
+                }
+            }
+
+        }
+
         public ObservableCollection<ProductoA> _seleccionProdA;
-        public  ObservableCollection<ProductoA> SeleccionProdA
+        public ObservableCollection<ProductoA> SeleccionProdA
         {
             get { return _seleccionProdA; }
             set
@@ -67,12 +102,46 @@ namespace Guia1.ViewModels
             }
 
         }
+        #endregion
+        #region Commands
+        public ICommand ItemEvento
+        {
+            get
+            {
+                return new RelayCommand(Selected);
+            }
+
+        }
+
+        private void Selected()
+        {
+
+            NavigateProdDefinir(ItemSeleccionado);
+
+        }
+
+        #endregion
+
 
         public ProductoEditarViewModel(INavigationService navigationService)
         {
 
             _navigationService = navigationService;
-           
+            NavigateCommand = new DelegateCommand(Navigate);
+            dialogService = new DialogService();
+            dataService = new DataService();
+        }
+
+        private async void Navigate()
+        {
+         await   _navigationService.NavigateAsync("HojaCalculo");
+        }
+
+        private async void NavigateProdDefinir(ProductoA itemSeleccionado)
+        {
+            var parametros = new NavigationParameters();
+            parametros.Add("Item", ItemSeleccionado);
+            await _navigationService.NavigateAsync("HojaCalculo", parametros);
         }
 
         public void OnNavigatedFrom(NavigationParameters parameters)
@@ -85,7 +154,7 @@ namespace Guia1.ViewModels
             if (parameters.ContainsKey("Item"))
             {
                 SeleccionProducto =(ProductoPrincipal)parameters["Item"];
-                nombre = SeleccionProducto.ProductoPrincipalId.ToString();
+                nombre = SeleccionProducto.Nombre;
                 SeleccionProdA = new ObservableCollection<ProductoA>(SeleccionProducto.Productos);
             }
         }

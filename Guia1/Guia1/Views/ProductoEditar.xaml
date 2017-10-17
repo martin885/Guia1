@@ -1,25 +1,68 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Guia1.Behaviors"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              prism:ViewModelLocator.AutowireViewModel="True"
              x:Class="Guia1.Views.ProductoEditar">
-    
-    
+    <!--Página con el producto principal seleccionado y que muestra todos los subproductos-->  
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="{Binding nombre}"/> 
-            <ListView ItemsSource="{Binding SeleccionProdA}" HasUnevenRows="True">
+            <Label Text="Producto Principal y Sub-Productos"
+                   FontAttributes="Bold"
+                   FontSize="Large"
+                   HorizontalOptions="Center"
+                   Margin="10,10,10,20"
+                   TextColor="Black"/>
+            <Label Text="{Binding nombre}" 
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"
+                   FontSize="Large"
+                   TextColor="Black"
+                   Margin="10"/>
+            <ListView ItemsSource="{Binding SeleccionProdA}"
+                      HasUnevenRows="True" 
+                      SelectedItem="{Binding ItemSeleccionado}"
+                      Margin="10">
+                <ListView.Header>
+                    <StackLayout Orientation="Horizontal">
+                    <Label Text="Producto Principal"
+                           VerticalOptions="Center"
+                           FontSize="Medium"
+                           FontAttributes="Bold"
+                           TextColor="Black"/>
+                    <Label Text="Clasificación"
+                           HorizontalOptions="EndAndExpand"
+                           VerticalOptions="Center"
+                           FontSize="Medium"
+                           FontAttributes="Bold"
+                           TextColor="Black"/>
+                    </StackLayout>
+                </ListView.Header>
+                <ListView.Behaviors>
+                    <local:ListItemSelected  Command="{Binding ItemEvento,Mode=TwoWay}"/>
+                </ListView.Behaviors>
                 <ListView.ItemTemplate >
                     <DataTemplate>
                         <ViewCell>
-                            <StackLayout>
-                                <Label Text="{Binding Nombres}"/>
+                            <StackLayout Margin="10,10,10,10">
+                                <StackLayout Orientation="Horizontal">
+                                <Label Text="{Binding Nombres}"
+                                       VerticalOptions="Center"
+                                       FontSize="Medium"
+                                       FontAttributes="Bold"/>
+                                <Label Text="{Binding Clasificacion}"
+                                       HorizontalOptions="EndAndExpand"
+                                       VerticalOptions="Center"
+                                       FontSize="Medium"
+                                       FontAttributes="Bold"/>
+                                </StackLayout>
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            <Button Command="{Binding NavigateCommand}" Text="Calcular"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

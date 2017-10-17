@@ -10,8 +10,8 @@ using Xamarin.Forms.Xaml;
 
 namespace Guia1.Views
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class AgregarProducto : ContentPage
+ 
+    public partial class AgregarProducto : ContentPage
 	{
 		public AgregarProducto()
 		{

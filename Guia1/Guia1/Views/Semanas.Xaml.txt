@@ -1,0 +1,66 @@
+ <!--<StackLayout Margin="10">
+                                <StackLayout Orientation="Horizontal" 
+                                             VerticalOptions="Center" 
+                                             HorizontalOptions="Center">
+                                    <Label Text="{Binding SemanasDiasCalculo}" 
+                                           FontSize="Medium" 
+                                           FontAttributes="Bold" />
+                                    <Label Text="{Binding SemanasNumero}" 
+                                           FontSize="Medium"
+                                           FontAttributes="Bold"/>
+                                    <Label Text="{Binding FechaDias}" 
+                                           HorizontalOptions="EndAndExpand"
+                                           FontSize="Medium"
+                                           FontAttributes="Bold"/>
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Requerimiento Bruto: " 
+                                           VerticalOptions="Center"/>
+                                    <Entry Text="{Binding ReqBruto}" 
+                                           Placeholder="Ingresar Valor"
+                                           Margin="10"
+                                           Keyboard="Numeric" 
+                                           HorizontalOptions="FillAndExpand"
+                                           IsEnabled="{Binding IsEnabled}"/>
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal" >
+                                    <Label Text="Inventario Inicial: "/>
+                                    <Label Text="{Binding InventarioInicial}" 
+                                           FontAttributes="Bold"
+                                            HorizontalOptions="EndAndExpand"
+                                           Margin="0,0,20,0"/>
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal" >
+                                    <Label Text="Requerimiento Neto: "/>
+                                    <Label Text="{Binding ReqNeto}" 
+                                           FontAttributes="Bold" 
+                                           HorizontalOptions="EndAndExpand"
+                                            Margin="0,0,20,0"/>
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal"  >
+                                    <Label Text="Liberación de Orden: " 
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="StartAndExpand"/>
+                                    <Label Text="{Binding DateSelectedLibOrden}" 
+                                                IsVisible="{Binding  IsVisibleDate}"
+                                                HorizontalOptions="StartAndExpand"
+                                           BackgroundColor="RoyalBlue"
+                                          TextColor="White"
+                                                VerticalOptions="Center"/>
+                                    <Label Text="{Binding LibOrden}" 
+                                           BackgroundColor="RoyalBlue" 
+                                           TextColor="White" FontSize="Medium" 
+                                           FontAttributes="Bold" 
+                                           VerticalOptions="Center"  
+                                           HorizontalOptions="EndAndExpand"
+                                            Margin="0,0,20,0"/>
+                                    
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal" >
+                                    <Label Text="Inventario Final: "/>
+                                    <Label Text="{Binding InvFinal}" 
+                                           HorizontalOptions="EndAndExpand"
+                                            Margin="0,0,20,0"
+                                           FontAttributes="Bold"/>
+                                </StackLayout>
+                            </StackLayout>-->

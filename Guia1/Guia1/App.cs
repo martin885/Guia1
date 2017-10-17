@@ -22,6 +22,7 @@ namespace Guia1
             Container.RegisterTypeForNavigation<AgregarProducto>();
             Container.RegisterTypeForNavigation<ProdSubDefinir>();
             Container.RegisterTypeForNavigation<ProductoEditar>();
+            Container.RegisterTypeForNavigation<HojaCalculo>();
             Container.RegisterTypeForNavigation<NavBar>();
         }
         public class NavBar : NavigationPage

@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Guia1.Behaviors"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="Guia1.Views.HojaCalculo"
+             NavigationPage.HasBackButton="False">
+    <!--Página con el cálculo del MRP-->
+    <ContentPage.ToolbarItems>
+        <ToolbarItem 
+            Icon="Back32.png"
+                    Command="{Binding NavigateCommand}" 
+                     Priority="0"/>
+        <ToolbarItem Text="Pasar Pagina" Icon="PasarPag32.png"
+                    Command="{Binding Toggled}"
+                     Priority="1"/>
+        <ToolbarItem Text="Editar Producto"
+                     Icon="Editar32.png"
+                    Command="{Binding Editar}"
+                     Priority="2"/>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <StackLayout>
+
+            <Label Text="{Binding NombreProducto}"  FontSize="Large" FontAttributes="Bold" HorizontalOptions="Center" />
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Fecha de inicio"
+                       VerticalOptions="Center"/>
+            <DatePicker Date="{Binding DateSelected}"
+                        VerticalOptions="Center"
+                        HorizontalOptions="FillAndExpand"
+                        />
+            </StackLayout>
+            <StackLayout IsVisible="{Binding IsVisiblePropiedad}">
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="{Binding SemanasDiasCalculo}"
+                           VerticalOptions="Center"/>
+                    <Label Text="a calcular"
+                       VerticalOptions="Center"/>
+                    <Entry Placeholder="{Binding SemanasDiasCalculo}" 
+                       Text="{Binding CantSemanas,Mode=TwoWay}" 
+                       HorizontalOptions="FillAndExpand"
+                       Keyboard="Numeric"
+                       VerticalOptions="Center">
+                        <Entry.Behaviors>
+                            <local:CompletedBehavior  Command="{Binding Complete}"/>
+                        </Entry.Behaviors>
+                    </Entry>
+                </StackLayout>
+            </StackLayout>
+            <ListView ItemsSource="{Binding SemanasCollection}" 
+                      HasUnevenRows="True" 
+                      SelectedItem="{Binding SelectedItem}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Margin="10">
+                                <StackLayout Orientation="Horizontal" 
+                                             VerticalOptions="Center"
+                                             Margin="10">
+                                    
+                                    <Label Text="{Binding SemanasDiasCalculo}" 
+                                           FontSize="Medium" 
+                                           FontAttributes="Bold"/>
+                                    <Label Text="{Binding SemanasNumero}" 
+                                           FontSize="Medium"
+                                           FontAttributes="Bold"/>
+                                    <Label Text="{Binding FechaDias}" 
+                                           HorizontalOptions="EndAndExpand"
+                                           FontSize="Medium"
+                                           FontAttributes="Bold"/>
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Requerimiento Bruto: " 
+                                           VerticalOptions="Center"/>
+                                    <Entry Text="{Binding ReqBruto}" 
+                                           Placeholder="Ingresar Valor"
+                                           Margin="10"
+                                           Keyboard="Numeric" 
+                                           HorizontalOptions="FillAndExpand"
+                                           IsVisible="{Binding IsEnabled}"/>
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal" >
+                                    <Label Text="Inventario Inicial: "/>
+                                    <Label Text="{Binding InventarioInicial}" 
+                                            FontAttributes="Bold"
+                                            Margin="0,0,20,0" />
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal" >
+                                    <Label Text="Requerimiento Neto: "/>
+                                    <Label Text="{Binding ReqNeto}" 
+                                           FontAttributes="Bold" 
+                                           HorizontalOptions="EndAndExpand"
+                                            Margin="0,0,20,0"/>
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal"  >
+                                    <Label Text="Liberación de Orden: " 
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="StartAndExpand"/>
+
+                                    <Label Text="{Binding DateSelectedLibOrden}" 
+                                                IsVisible="{Binding  IsVisibleDate}"
+                                                HorizontalOptions="StartAndExpand"
+                                           BackgroundColor="RoyalBlue"
+                                          TextColor="White"
+                                                VerticalOptions="Center"/>
+                                    <Label Text="{Binding LibOrden}" 
+                                           BackgroundColor="RoyalBlue" 
+                                           TextColor="White" FontSize="Medium" 
+                                           FontAttributes="Bold" 
+                                           VerticalOptions="Center"  
+                                           HorizontalOptions="EndAndExpand"
+                                            Margin="0,0,20,0"/>
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal" >
+                                    <Label Text="Inventario Final: "/>
+                                    <Label Text="{Binding InvFinal}" 
+                                           HorizontalOptions="EndAndExpand"
+                                            Margin="0,0,20,0"
+                                           FontAttributes="Bold"/>
+                                </StackLayout>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <!--<StackLayout Orientation="Horizontal" HorizontalOptions="Center" Margin="10">-->
+            <Button Text="Calcular" 
+                    Command="{Binding CalcularCommand}" 
+                    IsEnabled="{Binding IsEnabledCommand}"
+                    BackgroundColor="Aquamarine"
+                    Margin="10"/>
+            <!--<Button Text="Volver a Inicio"
+                    Command="{Binding NavigateCommand}"/>
+            <Button Text="Pasar Pagina"
+                    Command="{Binding Toggled}"/>
+            
+            --><!--</StackLayout>--><!--
+            <Button Text="Editar Producto"
+                    Command="{Binding Editar}"/>-->
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -4,18 +4,24 @@
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              xmlns:local="clr-namespace:Guia1.Behaviors"
              prism:ViewModelLocator.AutowireViewModel="True"
-             x:Class="Guia1.Views.AgregarProducto" 
-             Title="Productos y Sub-Productos">
-
-    <ScrollView>
+             x:Class="Guia1.Views.AgregarProducto">
+    <!--Página que muestras los productos principales agregados--> 
+    
         <StackLayout >
             <StackLayout Orientation="Horizontal" 
                         Margin="0,0,0,10" >
-                <Image Source="Diagrama.png" Scale="0.5"
+                <Label Text="Productos Principales" 
+                       FontAttributes="Bold"
+                       FontSize="Large"
+                       Margin="0,20,0,0"
                        VerticalOptions="CenterAndExpand"
-                       HorizontalOptions="CenterAndExpand"/>
+                       HorizontalOptions="CenterAndExpand"
+                       TextColor="Black"/>
             </StackLayout>
-            <ListView ItemsSource="{Binding ProductoPrincipal}" HasUnevenRows="True" SelectedItem="{Binding ItemSeleccionado,Mode=TwoWay}">
+            <ListView ItemsSource="{Binding ProductoPrincipal}" 
+                      HasUnevenRows="True" 
+                      SelectedItem="{Binding ItemSeleccionado,Mode=TwoWay}"
+                      Margin="10">
                 <ListView.Behaviors>
                     <local:ListItemSelected  Command="{Binding ItemEvento,Mode=TwoWay}"/>
                 </ListView.Behaviors>
@@ -23,8 +29,11 @@
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout>
-                                <Label Text="{Binding ProductoPrincipalId}"/>
-                                <Label Text="{Binding Nombre}"/>
+                                <Label Text="{Binding Nombre}"
+                                       Margin="10"
+                                       FontAttributes="Bold"
+                                       FontSize="Medium"
+                                       TextColor="Black"/>
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>
@@ -32,5 +41,5 @@
             </ListView>
           
         </StackLayout>
-    </ScrollView>
+ 
 </ContentPage>

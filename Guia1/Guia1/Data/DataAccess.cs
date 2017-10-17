@@ -21,10 +21,14 @@ namespace Guia1.Data
         {
             var config = DependencyService.Get<IConfig>();
             connection = new SQLiteConnection(config.Platform,
-               Path.Combine(config.DirectoryDB, "MRP-Producto.db3"));
+            Path.Combine(config.DirectoryDB, "MRP-Producto.db3"));
+            //connection.DropTable<ProductoPrincipal>();
             connection.CreateTable<ProductoPrincipal>();
+            //connection.DropTable<ProductoA>();
             connection.CreateTable<ProductoA>();
-                
+            //connection.DropTable<SemanasA>();
+            connection.CreateTable<SemanasA>();
+
         }
 
         public void Insert<T>(T model, bool WithChildren)
@@ -54,7 +58,7 @@ namespace Guia1.Data
         {
             connection.Delete(model);
         }
-
+        
 
         public void DeleteAll<T>()
         {

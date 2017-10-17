@@ -3,53 +3,50 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Guia1.Views.Main"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
-             prism:ViewModelLocator.AutowireViewModel="True"
-             Padding="10"
-             Title="MRP Página Principal">
+             prism:ViewModelLocator.AutowireViewModel="True">
+    <!--Página Principal-->
     <ContentPage.Content>
-
         <StackLayout >
-            <Grid >
-               
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                   
-                </Grid.RowDefinitions>
+            <Label Text="MRP Página Principal"
+                   HorizontalOptions="Center"
+                   FontSize="Large"
+                   FontAttributes="Bold"
+                   Margin="10,20,10,10"/>
+            
+            <StackLayout VerticalOptions="CenterAndExpand"
+                         Spacing="40"
+                         Margin="10">
                 
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                   
-                </Grid.ColumnDefinitions>
-                <Image Source="materiales.png" 
-                       Scale="1" 
-                       Margin="10" 
-                       VerticalOptions="FillAndExpand" 
-                       HorizontalOptions="CenterAndExpand"
-                       Grid.Row="0" 
-                    Grid.Column="0"
-                       Grid.ColumnSpan="2"/>
-                <Button Text="Definir Producto y Sub-Productos" 
-                    Command="{Binding NavigateProductoCommand}" 
-                    HorizontalOptions="FillAndExpand"
-                    VerticalOptions="FillAndExpand"
-                    Grid.Row="2" 
-                    Grid.Column="0"
-                    Grid.ColumnSpan="2"/>
-                <Button Text="Calcular" Command="{Binding CalcularCommand}" 
-                    HorizontalOptions="FillAndExpand"
-                    VerticalOptions="FillAndExpand"
-                    Grid.Row="1"
-                    Grid.Column="0"/>
+            <StackLayout Orientation="Horizontal">
+                <Image Source="Agregar32.png" 
+                       HorizontalOptions="Start"/>
                 <Button Text="Agregar Producto" 
-                    Command="{Binding NavigateAgregarCommand}"
+                    Command="{Binding NavigateProductoCommand}"
+                        BackgroundColor="PaleTurquoise"
+                    HorizontalOptions="FillAndExpand" 
+                    VerticalOptions="CenterAndExpand"/>
+
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Image Source="Box32.png" 
+                       HorizontalOptions="Start"/>
+                <Button Text="Revisar Pedidos" 
+                        Command="{Binding RevisarCommand}" 
+                            BackgroundColor="PaleTurquoise"
                     HorizontalOptions="FillAndExpand"
-                    VerticalOptions="FillAndExpand"
-                    Grid.Row="1" 
-                    Grid.Column="1"/>
-       
-        </Grid>
+                         VerticalOptions="CenterAndExpand"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Image Source="Calcular32.png" 
+                       HorizontalOptions="Start"/>
+                <Button Text="Calcular Pedidos" 
+                    Command="{Binding NavigateCalcularCommand}"
+                            BackgroundColor="PaleTurquoise"
+                     HorizontalOptions="FillAndExpand"
+                     VerticalOptions="CenterAndExpand"/>
+
+            </StackLayout>
+        </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

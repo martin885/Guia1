@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.10
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guia1.Android", "Guia1\Guia1.Android\Guia1.Android.csproj", "{E1157A0C-A3EF-48AE-8199-0402CF6459C0}"
 EndProject
@@ -196,6 +196,8 @@ Global
 		{84B4A6C4-4A95-4DD1-994E-2675FC93E017}.AppStore|x86.Build.0 = Release|x86
 		{84B4A6C4-4A95-4DD1-994E-2675FC93E017}.AppStore|x86.Deploy.0 = Release|x86
 		{84B4A6C4-4A95-4DD1-994E-2675FC93E017}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{84B4A6C4-4A95-4DD1-994E-2675FC93E017}.Debug|Any CPU.Build.0 = Debug|x86
+		{84B4A6C4-4A95-4DD1-994E-2675FC93E017}.Debug|Any CPU.Deploy.0 = Debug|x86
 		{84B4A6C4-4A95-4DD1-994E-2675FC93E017}.Debug|ARM.ActiveCfg = Debug|ARM
 		{84B4A6C4-4A95-4DD1-994E-2675FC93E017}.Debug|ARM.Build.0 = Debug|ARM
 		{84B4A6C4-4A95-4DD1-994E-2675FC93E017}.Debug|ARM.Deploy.0 = Debug|ARM

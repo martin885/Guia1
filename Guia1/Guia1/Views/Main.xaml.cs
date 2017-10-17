@@ -9,7 +9,7 @@ using Xamarin.Forms.Xaml;
 
 namespace Guia1.Views
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
+   
     public partial class Main : ContentPage
     {
         public Main()
