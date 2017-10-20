@@ -17,6 +17,7 @@ namespace Guia1.Models
         public string Nombre { get; set; }
         public bool Calculo { get; set; }
         public bool Borrar { get; set; }
+        public bool Editar { get; set; }
 
         [OneToMany(CascadeOperations = CascadeOperation.All)] 
         public  List<ProductoA> Productos { get; set; }

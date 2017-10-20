@@ -22,6 +22,22 @@ namespace Guia1.ViewModels
         DialogService dialogService;
         #endregion
         #region propiedades
+        
+
+        string _titulo;
+        public string Titulo
+        {
+            get { return _titulo; }
+            set
+            {
+                if (_titulo != value)
+                {
+                    _titulo = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Titulo)));
+                }
+            }
+
+        }
         public string CantP { get; set; }
 
         string _nombrProducto;
@@ -54,7 +70,20 @@ namespace Guia1.ViewModels
             }
 
         }
+        bool _isVisible;
+        public bool IsVisible
+        {
+            get { return _isVisible; }
+            set
+            {
+                if (_isVisible != value)
+                {
+                    _isVisible = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsVisible)));
+                }
+            }
 
+        }
         public ProductoPrincipal ProductoPrincipal { get; set; }
 
         List<ProductoPrincipal> ListaProductoPrincipal;
@@ -101,25 +130,7 @@ namespace Guia1.ViewModels
         public DelegateCommand NavigateCommand { get; private set; }
 
 
-        public ICommand Refrescar
-        {
-
-            get
-            {
-                return new RelayCommand(RefrescarCommand);
-            }
-
-        }
-
-        private async void RefrescarCommand()
-        {
-
-            foreach (var list in ListaProducto)
-            {
-                await dialogService.ShowMessage("Dependencia", list.Dependencia);
-            }
-        }
-
+        //Mostrar los Sub-Productos en pantalla luego de la definición de cuantos son
         public ICommand Complete
         {
 
@@ -133,30 +144,98 @@ namespace Guia1.ViewModels
         //Mostrar los Sub-Productos en pantalla luego de la definición de cuantos son
         public void Display()
         {
-
-
+            if (string.IsNullOrEmpty(CantP))
+            {
+                CantP = "0";
+            }
+            IsEnable = false;
+            IsVisible = true;
             Producto = new List<ProductoA>();
             ProductoPrincipal = new ProductoPrincipal { Nombre = NombreProducto, Productos = Producto };
             ListaProductoPrincipal.Add(ProductoPrincipal);
-            Producto.Add(new ProductoA { Nombres = NombreProducto });
+            Producto.Add(new ProductoA { Nombres = NombreProducto, Dependencia="0",Cantidad="1" });
             for (int i = 0; i < int.Parse(CantP); i++)
             {
 
-                Producto.Add(new ProductoA {IsEnabledNombre=true, IsEnabledDependencia = true });
+                Producto.Add(new ProductoA {IsEnabledDependencia = true });
 
-                IsEnable = false;
-                if (i == 0)
-                {
-                    Producto.First().Dependencia = "0";
-                    Producto.First().Cantidad = "1";
-
-                }
+               
 
             }
             ListaProducto = new ObservableCollection<ProductoA>(Producto);
         }
-
-
+        //Agregar un subproducto después de haber desplegado la lista
+        public ICommand AgregarCommand
+        {
+            get
+            {
+                return new RelayCommand(Agregar);
+            }
+        }
+        private async void Agregar()
+        {  //Si no viene desde la edición
+            if (ProductoPrincipal.Editar != true)
+            {
+                Producto.Add(new ProductoA { IsEnabledDependencia = true });
+                ListaProducto = new ObservableCollection<ProductoA>(Producto);
+                await dialogService.ShowMessage(
+                   "Mensaje", "Sub-Producto agregado"
+                   );
+            }
+            else
+            //Si  viene desde la edición
+            {
+                ProductoPrincipal.Productos.Add(new ProductoA { IsEnabledDependencia = true });
+                ListaProducto = new ObservableCollection<ProductoA>(ProductoPrincipal.Productos);
+                await dialogService.ShowMessage(
+                   "Mensaje", "Sub-Producto agregado"
+                   );
+            }
+        }
+        //Borrar un subproducto después de haber desplegado la lista
+        public ICommand Borrar1ArtCommand
+        {
+            get
+            {
+                return new RelayCommand(Borrar1Art);
+            }
+        }
+        private async void Borrar1Art()
+        {
+            //Si no viene desde la edición
+            if (ProductoPrincipal.Editar != true)
+            { 
+            if (ListaProducto.Count() == 1)
+            {
+                await dialogService.ShowMessage(
+               "Mensaje", "No se pueden eliminar más sub-productos"
+               );
+                return;
+            }
+            Producto.Remove(Producto.Last());
+            ListaProducto = new ObservableCollection<ProductoA>(Producto);
+            await dialogService.ShowMessage(
+               "Mensaje", "Sub-Producto borrado"
+               );
+            }
+            //Si viene desde la edición
+            else
+            {
+                if (ListaProducto.Count() == 1)
+                {
+                    await dialogService.ShowMessage(
+                   "Mensaje", "No se pueden eliminar más sub-productos"
+                   );
+                    return;
+                }
+                ProductoPrincipal.Productos.Remove(Producto.Last());
+                ListaProducto = new ObservableCollection<ProductoA>(ProductoPrincipal.Productos);
+                await dialogService.ShowMessage(
+                   "Mensaje", "Sub-Producto borrado"
+                   );
+            }
+        }
+        //Borrar todos
         public ICommand BorrarCommand
         {
             get
@@ -179,10 +258,14 @@ namespace Guia1.ViewModels
             }
             ListaProducto.Clear();
             ProductoPrincipal.Borrar = true;
+            IsVisible = false;
+            Titulo = "Producto Borrado";
             await dialogService.ShowMessage(
                "Mensaje", "Se borró el contenido con exito"
                );
-        }
+}
+
+        //Guardar todos
         public ICommand GuardarCommand
         {
             get
@@ -194,97 +277,116 @@ namespace Guia1.ViewModels
         private async void Guardar()
         {
 
-            //// saber si hay un casillero nulo en clasificación
-            //foreach (var lista in ListaProducto)
-            //{
-            //    if (string.IsNullOrEmpty(lista.Clasificacion))
-            //    {
-            //        await dialogService.ShowMessage(
-            //     "Error", "Agregar el código de clasificación a todos los elementos"
-            //     );
-            //        return;
-            //    }
-            //}
-            ////            filtro para clasificaciones que no cumplen con la nomenclatura
+            // saber si hay un casillero nulo en dependencia
+            foreach (var lista in ListaProducto)
+            {
+                if (string.IsNullOrEmpty(lista.Dependencia))
+                {
+                    await dialogService.ShowMessage(
+                 "Error", "Agregar dependencia a todos los elementos"
+                 );
+                    return;
+                }
+            }
 
+            //filtro para dependencia que no cumplen con la nomenclatura
+            foreach (var productoA in ListaProducto)
+            {
 
-            //foreach (var lista in ListaProducto)
-            //{
-            //    var NewLista = lista.Clasificacion.Replace(".", "").Replace("-", "").Replace("_", "");
-
-            //    int result = 0;
-            //    if (!int.TryParse(NewLista, out result))
-            //    {
-            //        await dialogService.ShowMessage(
-            //              "Error", "El código " + lista.Clasificacion + " no es vàlido" + ". Ingresar el código con el siguiente formato:1.1.2"
-            //          );
-
-            //        return;
-            //    }
-            //}
-            //aviso de valores repetidos         
-            //Primero se selecciona la "Clasificacion" como parámetro de agrupación y luego se pone como condición que sean mayor que 1 para agruparlos
-            //var agrupar = ListaProducto.GroupBy(x => x.Clasificacion.Replace(".", "").Replace("-", "").Replace("_", "")).Where(x => x.Count() > 1).ToList();
-            ////lista con los Keys armados
-            //foreach (var listaKey in agrupar)
-            //{
-            //    //lista con los ProductoA.Clasificacion en cada Key
-            //    foreach (var listaClasif in listaKey)
-            //    {
-
-            //        await dialogService.ShowMessage(
-            //           "Error", "El código de clasificación "
-            //           + listaClasif.Clasificacion + " se repite "
-            //           + listaKey.Count()
-            //           + " veces. Debe haber un número de clasificación distinto por cada producto."
-            //       );
-            //        return;
-
-            //    }
-            //}
+                if (productoA.Dependencia != "0")
+                {
+                    if (ListaProducto.Any(x => x.Nombres == productoA.Dependencia) == false)
+                    {
+                        await dialogService.ShowMessage(
+                              "Error", "La dependencia " + productoA.Dependencia + " no es vàlida" + ". Ingresar una que coincida con algún producto creado"
+                          );
+                        return;
+                    }
+                }
+                else
+                {
+                    if (ListaProducto.First().Dependencia != "0")
+                    {
+                        await dialogService.ShowMessage(
+                        "Error", "La dependencia " + productoA.Dependencia + " no es vàlida" + ". El valor debe ser de 0"
+                    );
+                        return;
+                    }
+                    //aviso de valores repetidos         
+                    //Primero se selecciona la "Clasificacion" como parámetro de agrupación y luego se pone como condición que sean mayor que 1 para agruparlos
+                    var agrupar = ListaProducto.GroupBy(x => x.Dependencia).Where(x => x.Count() > 1).ToList();
+                    //lista con los Keys armados
+                    foreach (var listaKey in agrupar)
+                    {
+                        //lista con los ProductoA.Clasificacion en cada Key
+                        foreach (var listaClasif in listaKey)
+                        {
+                            if (listaClasif.Dependencia == "0")
+                            {
+                                await dialogService.ShowMessage(
+                                   "Error", "La dependencia debe ser distinta de 0."
+                               );
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+            if (ListaProducto.First().Nombres != ProductoPrincipal.Nombre)
+            {
+                await dialogService.ShowMessage(
+                                  "Error", "El nombre del primer producto fue cambiado."
+                              );
+                return;
+            }
+            //Guardo la lista de productos principales(si existe el producto lo actualiza, y si no lo agrega), 
+            //la lista de productosA en el producto principal, 
+            //y actualizo el producto principal por si se viene por la zona de edición donde no creo ListaProductoPrincipal
 
             dataService.Save(ListaProductoPrincipal, true);
             dataService.Save(ProductoPrincipal.Productos, true);
             dataService.Update(ProductoPrincipal, true);
-            await dialogService.ShowMessage(
-                          "Mensaje", "El producto se guardó exitosamente"
-                      );
+                await dialogService.ShowMessage(
+                              "Mensaje", "El producto se guardó exitosamente"
+                          );
 
+            
         }
-
 
 
 
         #endregion
+
         public ProdSubDefinirViewModel(INavigationService navigationService)
         {
+            Titulo = "Agregar Producto";
             IsEnable = true;
             ListaProductoPrincipal = new List<ProductoPrincipal>();
             _navigationService = navigationService;
-            NavigateCommand = new DelegateCommand(Navigate);
+            //NavigateCommand = new DelegateCommand(Navigate);
             dialogService = new DialogService();
             dataService = new DataService();
         }
+ //Por ahora no se usa
+        //private async void Navigate()
+        //{
+        //    if (ProductoPrincipal != null)
+        //    {
+        //        if (ProductoPrincipal.Calculo == true)
+        //        {
+        //            var parametros = new NavigationParameters();
+        //            parametros.Add("Item", ProductoPrincipal);
+        //            await _navigationService.GoBackAsync(parametros);
 
-        private async void Navigate()
-        {
-            if (ProductoPrincipal != null)
-            {
-                if (ProductoPrincipal.Calculo == true)
-                {
-                    var parametros = new NavigationParameters();
-                    parametros.Add("Item", ProductoPrincipal);
-                    await _navigationService.GoBackAsync(parametros);
+        //        }
+        //        else { 
+        //        await _navigationService.GoBackAsync();
+        //        }
+        //    }
 
-                }
-                else { 
-                await _navigationService.GoBackAsync();
-                }
-            }
+        //}
 
-        }
-
-        public async void OnNavigatedFrom(NavigationParameters parameters)
+        public  void OnNavigatedFrom(NavigationParameters parameters)
         {
            
         }
@@ -293,13 +395,26 @@ namespace Guia1.ViewModels
             if (parameters.ContainsKey("Item"))
             {
                 IsEnable = false;
-
+                Titulo = "Editar Producto";
                 ProductoPrincipal = (ProductoPrincipal)parameters["Item"];
                 ProductoPrincipal.Calculo = true;
+                NombreProducto = ProductoPrincipal.Nombre;
+                IsEnable = false;
+                IsVisible = true;
+               
+
                 foreach (var lista in ProductoPrincipal.Productos)
                 {
+                    if (lista.Dependencia == "0")
+                    {
+                        lista.IsEnabledDependencia = false;
+                    }
+                    else { 
                     lista.IsEnabledDependencia = true;
+                    }
                 }
+                
+             
 
                 ListaProducto = new ObservableCollection<ProductoA>(ProductoPrincipal.Productos);
 
@@ -308,7 +423,7 @@ namespace Guia1.ViewModels
         }
 
 
-        public async void OnNavigatingTo(NavigationParameters parameters)
+        public  void OnNavigatingTo(NavigationParameters parameters)
         {
            
         }

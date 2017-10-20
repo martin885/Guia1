@@ -12,15 +12,36 @@
     </ContentPage.ToolbarItems>
     <ContentPage.Content >
         <StackLayout >
-            <Label Text="Agregar Producto"
+           
+            <Label Text="{Binding Titulo}"
                    FontSize="Large"
                    FontAttributes="Bold"
                    HorizontalOptions="Center"
                    Margin="10"/>
-            <Entry Placeholder="Producto Principal" Text="{Binding NombreProducto,Mode=TwoWay}" />
-            <StackLayout Orientation="Horizontal" >
+            <Entry Placeholder="Producto Principal" 
+                   Text="{Binding NombreProducto,Mode=TwoWay}" 
+                    IsVisible="{Binding IsEnable}"/>
+            <StackLayout Orientation="Horizontal" 
+                         IsVisible="{Binding IsVisible}"
+                         HorizontalOptions="CenterAndExpand"
+                         Spacing="10">
+                <Image Source="Minus.png" >
+                    <Image.GestureRecognizers >
+                        <TapGestureRecognizer  Command="{Binding Borrar1ArtCommand}"/>
+                    </Image.GestureRecognizers>
+                </Image>
+                <Image Source="Plus32.png">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer  Command="{Binding AgregarCommand}"/>
+                    </Image.GestureRecognizers>
+                </Image>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" 
+                         IsVisible="{Binding IsEnable}">
                 <Label Text="Cantidad de Sub-Productos"/>
-                <Entry Text="{Binding CantP,Mode=TwoWay}" Keyboard="Numeric" IsEnabled="{Binding IsEnable}" HorizontalOptions="FillAndExpand">
+                <Entry Text="{Binding CantP,Mode=TwoWay}" 
+                       Keyboard="Numeric"  
+                       HorizontalOptions="FillAndExpand">
                     <Entry.Behaviors>
                         <local:CompletedBehavior  Command="{Binding Complete}"/>
                     </Entry.Behaviors>
@@ -29,28 +50,31 @@
             <ListView ItemsSource="{Binding ListaProducto}" 
                       HasUnevenRows="True" 
                       Margin="10"
-                      x:Name="lista">
+                      x:Name="lista"
+                      SeparatorColor="Aquamarine">
                 <ListView.ItemTemplate >
                     <DataTemplate >
                         <ViewCell >
                             <StackLayout Margin="0,0,0,20"
                                          Padding="20" >
                                 <Entry Text="{Binding Nombres, Mode=TwoWay}" 
-                                       Placeholder="Nombre Sub-Producto"
-                                       IsEnabled="{Binding IsEnabledNombre}">
+                                       Placeholder="Nombre Sub-Producto">
                                 </Entry>
                                 <Entry Text="{Binding Cantidad, Mode=TwoWay}"
-                                       Placeholder="Cantidad de este Sub-Producto"/>
+                                       Placeholder="Cantidad de este Sub-Producto"
+                                       Keyboard="Numeric"/>
                                 <Entry Text="{Binding InventarioInicial}"
-                                       Placeholder="Inventario Inicial"/>
+                                       Placeholder="Inventario Inicial"
+                                       Keyboard="Numeric"/>
                                 <Entry Text="{Binding TiempoFabricacion, Mode=TwoWay}" 
-                                       Placeholder="Tiempo de Fabricación en días"/>
-                                <StackLayout Orientation="Horizontal">
-                                    <Label Text="Depende de: "
+                                       Placeholder="Tiempo de Fabricación en días"
+                                       Keyboard="Numeric"/>
+                                <StackLayout Orientation="Horizontal"
+                                             IsVisible="{Binding IsEnabledDependencia}">
+                                    <Label Text="Dependecia: "
                                            HorizontalOptions="Start"/>
                                     <Entry  Text="{Binding Dependencia,Mode=TwoWay}" 
-                                            HorizontalOptions="FillAndExpand"
-                                            IsEnabled="{Binding IsEnabledDependencia}"/>
+                                            HorizontalOptions="FillAndExpand"/>
                                 </StackLayout>
                                 <!--<StackLayout Orientation="Horizontal">
                                     <Label Text="Clasificación : "

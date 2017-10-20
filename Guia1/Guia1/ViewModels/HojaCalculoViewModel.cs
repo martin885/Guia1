@@ -102,21 +102,34 @@ namespace Guia1.ViewModels
 
         }
 
-        public bool _isEnabledCommand;
-        public bool IsEnabledCommand
+        public bool _isEnabled;
+        public bool IsEnabled
         {
-            get { return _isEnabledCommand; }
+            get { return _isEnabled; }
             set
             {
-                if (_isEnabledCommand != value)
+                if (_isEnabled != value)
                 {
-                    _isEnabledCommand = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsEnabledCommand)));
+                    _isEnabled = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsEnabled)));
                 }
             }
 
         }
+        public bool _visibleReCalcular;
+        public bool VisibleReCalcular
+        {
+            get { return _visibleReCalcular; }
+            set
+            {
+                if (_visibleReCalcular != value)
+                {
+                    _visibleReCalcular = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(VisibleReCalcular)));
+                }
+            }
 
+        }
         public string _cantSemanas;
         public string CantSemanas
         {
@@ -313,7 +326,7 @@ namespace Guia1.ViewModels
 
         }
         #endregion
-
+        #region Commands
         public ICommand Editar
         {
             get
@@ -328,25 +341,37 @@ namespace Guia1.ViewModels
         }
 
 
-        public ICommand Toggled
+        public ICommand PasarPaginaCommand
         {
             get
             {
-                return new RelayCommand(ToggledEvent);
+                return new RelayCommand(PasarPagina);
             }
         }
 
-        private void ToggledEvent()
+        private async void PasarPagina()
         {
+          
+        if (ProductoPrincipal.Calculo == false)
+            { 
+                await dialogService.ShowMessage("Error", "Se debe realizar, en primera medida, el cálculo");
+                return;
+            }
+         
             cont++;
             if (cont >= ProductoPrincipal.Productos.Count)
             {
                 cont = 0;
             }
+            if (ProductoPrincipal.Productos[cont].Semanas.All(x=>x==null))
+            {
+                await dialogService.ShowMessage("Error", "Se debe realizar, en primera medida, el cálculo con el nuevo sub-producto agregado");
+                cont = 0;
+            }
             pasarLista(cont);
         }
 
-        private void pasarLista(int cont)
+        private  void pasarLista(int cont)
         {
             if (ProductoPrincipal != null)
             {
@@ -356,6 +381,7 @@ namespace Guia1.ViewModels
             {
                 NombreProducto = "Producto Borrado";
             }
+           
             SemanasCollection = new ObservableCollection<SemanasA>(ProductoPrincipal.Productos[cont].Semanas);
         }
 
@@ -376,9 +402,9 @@ namespace Guia1.ViewModels
 
                 productoA.Semanas = new List<SemanasA>(); 
 
-                if (string.IsNullOrEmpty(SeleccionProducto.TiempoFabricacion))
+                if (string.IsNullOrEmpty(productoA.TiempoFabricacion))
                 {
-                    SeleccionProducto.TiempoFabricacion = 0.ToString();
+                    productoA.TiempoFabricacion = 0.ToString();
                 }
               
 
@@ -421,7 +447,7 @@ namespace Guia1.ViewModels
                     }
                 }
 
-                IsEnabledCommand = true;
+                IsEnabled = true;
             }
             SemanasCollection = new ObservableCollection<SemanasA>(ProductoPrincipal.Productos[0].Semanas);
         }
@@ -436,12 +462,10 @@ namespace Guia1.ViewModels
         //Càlculo del MRP con las semanas o días definidos
         private async void Calcular()
         {
-
-            foreach (var productoA in ProductoPrincipal.Productos)
+           
+                foreach (var productoA in ProductoPrincipal.Productos)
             {
-               
-
-                if (productoA.Cantidad == null)
+                    if (productoA.Cantidad == null)
                 {
                     productoA.Cantidad = 1.ToString();
                 }
@@ -523,7 +547,7 @@ namespace Guia1.ViewModels
                         {
                             //Index para ubicar en la lista el objeto guardado donde se tiene que hacer el pedido
 
-                            Index = i - int.Parse(SeleccionProducto.TiempoFabricacion);
+                            Index = i - int.Parse(productoA.TiempoFabricacion);
                             //if (Index < 0)
                             //{
                             //    await dialogService.ShowMessage("Error", "El plazo de fabricación debe estar contemplado dentro del rango de semanas");
@@ -561,20 +585,51 @@ namespace Guia1.ViewModels
 
             dataService.Update(ProductoPrincipal, true);
             SemanasCollection = new ObservableCollection<SemanasA>(ProductoPrincipal.Productos[0].Semanas);
-            //dataService.Save(SemanasLista, true);
+            IsEnabled = false;
+            VisibleReCalcular = true;
 
         }
+        public ICommand ReCalcularCommand
+        {
+            get
+            {
+                return new RelayCommand(ReCalcular);
+            }
+        }
 
+        private void ReCalcular()
+        {
+           
+            ProductoPrincipal.Calculo = false;
 
+            foreach (var productoA in ProductoPrincipal.Productos)
+            {//Borrado de todas las semanas en la base de datos
+                foreach (var semanas in productoA.Semanas)
+                {
+                    dataService.Delete(semanas);
+                }
+                //Limpiando las listas y la UI
+                productoA.Semanas.Clear();
+                SemanasCollection = new ObservableCollection<SemanasA>(productoA.Semanas);
+            }
+
+            NombreProducto = ProductoPrincipal.Productos.First().Nombres;
+            VisibleReCalcular = false;
+            IsVisiblePropiedad = true;
+            //Actualización del producto principal en la base de datos, así paso el parámetro ProductoPrincipal.Calculo = false y no se lo encuentra en la lista a revisar
+            dataService.Update(ProductoPrincipal, true);
+        }
+        #endregion
         public HojaCalculoViewModel(INavigationService navigationService)
         {
             _navigationService = navigationService;
             NavigateCommand = new DelegateCommand(Navigation);
             dialogService = new DialogService();
             dataService = new DataService();
-            IsEnabledCommand = false;
             SemanasDiasCalculo = "Días";
+            IsEnabled = false;
             IsVisiblePropiedad = true;
+            VisibleReCalcular = false;
             DateSelected = DateTime.Now;
 
         }
@@ -582,6 +637,7 @@ namespace Guia1.ViewModels
         private async void NavigationProdSubDefinir(ProductoPrincipal productoPrincipal)
         {
             var parametros = new NavigationParameters();
+            productoPrincipal.Editar = true;
             parametros.Add("Item", productoPrincipal);
             await _navigationService.NavigateAsync("ProdSubDefinir", parametros);
         }
@@ -603,6 +659,7 @@ namespace Guia1.ViewModels
             {
                 
                 ProductoPrincipal = (ProductoPrincipal)parameters["Item"];
+                ProductoPrincipal.Calculo = false;
                 if (ProductoPrincipal != null)
                 {
                    
@@ -632,26 +689,22 @@ namespace Guia1.ViewModels
                 if (ProductoPrincipal != null)
                 {
                     IsVisiblePropiedad = false;
-                    IsEnabledCommand = false;
+                    IsEnabled = false;
+                    NombreProducto = ProductoPrincipal.Nombre;
+                    ProductoPrincipal.Calculo = true;
                     ProductoPrincipal.Productos = dataService.Get<ProductoA>(true).Where(x => x.ProductoPrincipal.ProductoPrincipalId == ProductoPrincipal.ProductoPrincipalId).ToList();
-                    SemanasCollection = new ObservableCollection<SemanasA>(ProductoPrincipal.Productos[0].Semanas);
+                    SemanasCollection = new ObservableCollection<SemanasA>(ProductoPrincipal.Productos.First().Semanas);
                 }
-                }
+            }
+
             if (ProductoPrincipal.Borrar == true)
             { 
                 NombreProducto = "Producto Borrado";
                 IsVisiblePropiedad = false;
-                IsEnabledCommand = false;
+                IsEnabled = false;
             }
-            
+           
         }
-
-
-
-
-
-        //ProductoALista = ProductoPrincipal.Productos.OrderBy(x => x.Clasificacion).ToList();        
-
 
         public void OnNavigatingTo(NavigationParameters parameters)
         {

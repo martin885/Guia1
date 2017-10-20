@@ -10,20 +10,21 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem 
             Icon="Back32.png"
-                    Command="{Binding NavigateCommand}" 
-                     Priority="0"/>
-        <ToolbarItem Text="Pasar Pagina" Icon="PasarPag32.png"
-                    Command="{Binding Toggled}"
-                     Priority="1"/>
+            Command="{Binding NavigateCommand}"/>
+        <ToolbarItem Text="Pasar Pagina" 
+                     Icon="PasarPag32.png"
+                    Command="{Binding PasarPaginaCommand}"/>
         <ToolbarItem Text="Editar Producto"
                      Icon="Editar32.png"
-                    Command="{Binding Editar}"
-                     Priority="2"/>
+                    Command="{Binding Editar}"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout>
-
-            <Label Text="{Binding NombreProducto}"  FontSize="Large" FontAttributes="Bold" HorizontalOptions="Center" />
+            <Label Text="{Binding NombreProducto}"  
+                   FontSize="Large" 
+                   FontAttributes="Bold" 
+                   HorizontalOptions="Center" />
+            
             <StackLayout Orientation="Horizontal">
                 <Label Text="Fecha de inicio"
                        VerticalOptions="Center"/>
@@ -32,8 +33,9 @@
                         HorizontalOptions="FillAndExpand"
                         />
             </StackLayout>
-            <StackLayout IsVisible="{Binding IsVisiblePropiedad}">
-                <StackLayout Orientation="Horizontal">
+            <StackLayout >
+                <StackLayout Orientation="Horizontal"
+                             IsVisible="{Binding IsVisiblePropiedad}">
                     <Label Text="{Binding SemanasDiasCalculo}"
                            VerticalOptions="Center"/>
                     <Label Text="a calcular"
@@ -51,7 +53,8 @@
             </StackLayout>
             <ListView ItemsSource="{Binding SemanasCollection}" 
                       HasUnevenRows="True" 
-                      SelectedItem="{Binding SelectedItem}">
+                      SelectedItem="{Binding SelectedItem}"
+                      SeparatorColor="RoyalBlue">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -59,7 +62,7 @@
                                 <StackLayout Orientation="Horizontal" 
                                              VerticalOptions="Center"
                                              Margin="10">
-                                    
+
                                     <Label Text="{Binding SemanasDiasCalculo}" 
                                            FontSize="Medium" 
                                            FontAttributes="Bold"/>
@@ -125,20 +128,17 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <!--<StackLayout Orientation="Horizontal" HorizontalOptions="Center" Margin="10">-->
             <Button Text="Calcular" 
                     Command="{Binding CalcularCommand}" 
-                    IsEnabled="{Binding IsEnabledCommand}"
+                    IsVisible="{Binding IsEnabled}"
                     BackgroundColor="Aquamarine"
                     Margin="10"/>
-            <!--<Button Text="Volver a Inicio"
-                    Command="{Binding NavigateCommand}"/>
-            <Button Text="Pasar Pagina"
-                    Command="{Binding Toggled}"/>
-            
-            --><!--</StackLayout>--><!--
-            <Button Text="Editar Producto"
-                    Command="{Binding Editar}"/>-->
+            <Button Text="Volver a Calcular" 
+                    Command="{Binding ReCalcularCommand}" 
+                    IsVisible="{Binding VisibleReCalcular}"
+                    BackgroundColor="Aqua"
+                    Margin="10"/>
+           
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

@@ -5,10 +5,10 @@
              xmlns:local="clr-namespace:Guia1.Behaviors"
              prism:ViewModelLocator.AutowireViewModel="True"
              x:Class="Guia1.Views.AgregarProducto">
-    <!--Página que muestras los productos principales agregados--> 
-    
-        <StackLayout >
-            <StackLayout Orientation="Horizontal" 
+    <!--Página que muestras los productos principales agregados-->
+
+    <StackLayout >
+        <StackLayout Orientation="Horizontal" 
                         Margin="0,0,0,10" >
                 <Label Text="Productos Principales" 
                        FontAttributes="Bold"
@@ -21,7 +21,8 @@
             <ListView ItemsSource="{Binding ProductoPrincipal}" 
                       HasUnevenRows="True" 
                       SelectedItem="{Binding ItemSeleccionado,Mode=TwoWay}"
-                      Margin="10">
+                      Margin="10"
+                      SeparatorColor="Aqua">
                 <ListView.Behaviors>
                     <local:ListItemSelected  Command="{Binding ItemEvento,Mode=TwoWay}"/>
                 </ListView.Behaviors>
