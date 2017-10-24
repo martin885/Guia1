@@ -14,6 +14,9 @@
         <ToolbarItem Text="Pasar Pagina" 
                      Icon="PasarPag32.png"
                     Command="{Binding PasarPaginaCommand}"/>
+        <ToolbarItem Text="Guardar Xls" 
+                     Icon="Excel32.png"
+                    Command="{Binding XlsCommand}"/>
         <ToolbarItem Text="Editar Producto"
                      Icon="Editar32.png"
                     Command="{Binding Editar}"/>
@@ -132,13 +135,18 @@
                     Command="{Binding CalcularCommand}" 
                     IsVisible="{Binding IsEnabled}"
                     BackgroundColor="Aquamarine"
-                    Margin="10"/>
-            <Button Text="Volver a Calcular" 
+                    HorizontalOptions="Center"
+                    Margin="10"
+                    Grid.Row="0"
+                    Grid.Column="0"/>
+                <Button Text="Volver a Calcular" 
                     Command="{Binding ReCalcularCommand}" 
                     IsVisible="{Binding VisibleReCalcular}"
                     BackgroundColor="Aqua"
-                    Margin="10"/>
-           
+                     HorizontalOptions="Center"
+                    Margin="10"
+                    Grid.Row="0"
+                    Grid.Column="0" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
