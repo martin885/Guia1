@@ -9,16 +9,19 @@
     <!--Página con el cálculo del MRP-->
     <ContentPage.ToolbarItems>
         <ToolbarItem 
-            Icon="Back32.png"
+            Icon="Back.png"
             Command="{Binding NavigateCommand}"/>
         <ToolbarItem Text="Pasar Pagina" 
-                     Icon="PasarPag32.png"
+                     Icon="Pagina.png"
                     Command="{Binding PasarPaginaCommand}"/>
+        <ToolbarItem Text="Email" 
+                     Icon="Email.png"
+                    Command="{Binding EmailCommand}"/>
         <ToolbarItem Text="Guardar Xls" 
-                     Icon="Excel32.png"
+                     Icon="Excel.png"
                     Command="{Binding XlsCommand}"/>
         <ToolbarItem Text="Editar Producto"
-                     Icon="Editar32.png"
+                     Icon="Edit.png"
                     Command="{Binding Editar}"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>

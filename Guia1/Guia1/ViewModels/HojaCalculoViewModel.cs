@@ -2,6 +2,7 @@
 using Guia1.Interfaces;
 using Guia1.Models;
 using Guia1.Services;
+using Plugin.Messaging;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Navigation;
@@ -12,7 +13,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
@@ -489,13 +489,20 @@ namespace Guia1.ViewModels
             SemanasCollection = new ObservableCollection<SemanasA>(ProductoPrincipal.Productos[0].Semanas);
         }
 
+        //Método para el cálculo de cúanto va a tardar en realizarse todo el producto
         private  int TiempoFabricacionTotal()
         {
             var TiempoTotal = 0;
             //Separa en grupos definidos por la dependencia
             foreach (var grupo in ProductoPrincipal.Productos.GroupBy(x=>x.Dependencia).ToList())
             {
-
+                foreach(var producto in grupo)
+                {
+                    if (producto.TiempoFabricacion == null)
+                    {
+                        producto.TiempoFabricacion = 0.ToString();
+                    }
+                }
                //Saca El máximo valor de cada Key del grupo creado
                  TiempoTotal = TiempoTotal + int.Parse(grupo.Max(x => x.TiempoFabricacion));
                 
@@ -547,8 +554,7 @@ namespace Guia1.ViewModels
                 {
 
                     //calculo primer dia
-                    if (i == 0)
-                    {
+                  
                         if (productoA.Dependencia != "0")
                         {
                             //Busca el producto con el mismo nombre que la dependencia
@@ -562,49 +568,18 @@ namespace Guia1.ViewModels
                         productoA.Semanas[i].ReqBruto = (int.Parse(productoA.Semanas[i].ReqBruto) * int.Parse(productoA.Cantidad)).ToString();
                         productoA.Semanas[i].InventarioInicial = productoA.InventarioInicial;
                         productoA.Semanas[i].ReqNeto = (int.Parse(productoA.Semanas[i].ReqBruto) - int.Parse(productoA.Semanas[i].InventarioInicial)).ToString();
-                        productoA.Semanas[i].InvFinal = (int.Parse(productoA.Semanas[i].InventarioInicial) - int.Parse(productoA.Semanas[i].ReqBruto)).ToString();
-                        if (int.Parse(productoA.Semanas[i].InvFinal) < 0)
-                        {
-                            await dialogService.ShowMessage("Error", "El producto "
-                            + productoA.Nombres + " Exige una orden un día anterior al comtemplado."
-                            );
-                            return;
-                        }
                         if (int.Parse(productoA.Semanas[i].ReqNeto) <= 0)
                         {
                             productoA.Semanas[i].ReqNeto = 0.ToString();
                         }
-                    }
-                    else if (i > 0)
-                    {
+                        productoA.Semanas[i].InvFinal = (int.Parse(productoA.Semanas[i].InventarioInicial) - int.Parse(productoA.Semanas[i].ReqBruto)).ToString();
+                    
 
-                        if (productoA.Dependencia != "0")
-                        {
-                            var libOrden = ProductoPrincipal.Productos.Find(x => x.Nombres == productoA.Dependencia);
-                            productoA.Semanas[i].ReqBruto =libOrden.Semanas[i].LibOrden;
-                        }
-                        if (productoA.Semanas[i].ReqBruto == null)
-                        {
-                            productoA.Semanas[i].ReqBruto = 0.ToString();
-                        }
-                        productoA.Semanas[i].ReqBruto = (int.Parse(productoA.Semanas[i].ReqBruto) * int.Parse(productoA.Cantidad)).ToString();
-                        productoA.Semanas[i].InventarioInicial = productoA.Semanas[i - 1].InvFinal;
-                        productoA.Semanas[i].ReqNeto = (int.Parse(productoA.Semanas[i].ReqBruto) - int.Parse(productoA.Semanas[i].InventarioInicial)).ToString();
-                        if (int.Parse(productoA.Semanas[i].ReqNeto) <= 0)
-                        {
-                            productoA.Semanas[i].ReqNeto = 0.ToString();
-                        }
-                        productoA.Semanas[i].InvFinal = (int.Parse(productoA.Semanas[i].InventarioInicial) - int.Parse(productoA.Semanas[i].ReqBruto)).ToString();
-                        if (int.Parse(productoA.Semanas[i].InvFinal) < 0)
+                    if (int.Parse(productoA.Semanas[i].InvFinal) < 0)
                         {
                             //Index para ubicar en la lista el objeto guardado donde se tiene que hacer el pedido
 
                             Index = i - int.Parse(productoA.TiempoFabricacion);
-                            //if (Index < 0)
-                            //{
-                            //    await dialogService.ShowMessage("Error", "El plazo de fabricación debe estar contemplado dentro del rango de semanas");
-                            //    return;
-                            //}
 
                             //liberación de la orden
                             productoA.Semanas[Index].LibOrden = productoA.Semanas[i].ReqNeto;
@@ -623,7 +598,10 @@ namespace Guia1.ViewModels
                             productoA.Semanas[i].InvFinal = (int.Parse(productoA.Semanas[i].InventarioInicial) + int.Parse(productoA.Semanas[Index].LibOrden) - int.Parse(productoA.Semanas[i].ReqBruto)).ToString();
 
                         }
-                    }
+
+
+                    
+
                     ProductoPrincipal.Calculo = true;
                 }
         
@@ -641,13 +619,7 @@ namespace Guia1.ViewModels
             VisibleReCalcular = true;
 
         }
-        public ICommand ReCalcularCommand
-        {
-            get
-            {
-                return new RelayCommand(ReCalcular);
-            }
-        }
+
         public ICommand XlsCommand
         {
             get
@@ -687,8 +659,8 @@ namespace Guia1.ViewModels
                     //cont aumenta en 7 la posición de las filas en cada producto, las columnas dependen de los días elegidos
                        
 
-                        worksheet["A" + (cont+1).ToString()].Text = productoA.Nombres;
-                  
+                        migrantRange["A" + (cont+1).ToString()].Text = productoA.Nombres;
+                      
                         migrantRange["A" + (2 + cont).ToString()].Text = "Requerimiento Bruto";
                
                         migrantRange["A" + (3 + cont).ToString()].Text = "Inventario Inicial";
@@ -698,24 +670,57 @@ namespace Guia1.ViewModels
                         migrantRange["A" + (5 + cont).ToString()].Text = "Liberación Orden";
                     
                         migrantRange["A" + (6 + cont).ToString()].Text = "Inventario Final";
-                    
+
+                    //Estilos de las celdas
+                    migrantRange["A" + (cont + 1).ToString()].CellStyle.Font.Bold = true;
+                    migrantRange["A" + (cont + 1).ToString()].CellStyle.ColorIndex = ExcelKnownColors.Sea_green;
+                    migrantRange["A" + (cont + 1).ToString()].CellStyle.Borders.LineStyle = ExcelLineStyle.Medium;
+                    migrantRange["A" + (2 + cont).ToString()].CellStyle.ColorIndex = ExcelKnownColors.Aqua;
+                    migrantRange["A" + (2 + cont).ToString()].CellStyle.Borders.LineStyle = ExcelLineStyle.Medium;
+                    migrantRange["A" + (3 + cont).ToString()].CellStyle.ColorIndex = ExcelKnownColors.Aqua;
+                    migrantRange["A" + (3 + cont).ToString()].CellStyle.Borders.LineStyle = ExcelLineStyle.Medium;
+                    migrantRange["A" + (4 + cont).ToString()].CellStyle.ColorIndex = ExcelKnownColors.Aqua;
+                    migrantRange["A" + (4 + cont).ToString()].CellStyle.Borders.LineStyle = ExcelLineStyle.Medium;
+                    migrantRange["A" + (5 + cont).ToString()].CellStyle.ColorIndex = ExcelKnownColors.Aqua;
+                    migrantRange["A" + (5 + cont).ToString()].CellStyle.Borders.LineStyle = ExcelLineStyle.Medium;
+                    migrantRange["A" + (6 + cont).ToString()].CellStyle.ColorIndex = ExcelKnownColors.Aqua;
+                    migrantRange["A" + (6 + cont).ToString()].CellStyle.Borders.LineStyle = ExcelLineStyle.Medium;
                     //Recorrido de columnas desde la columna 2 en adelante 
                     for (int column = 2; column < int.Parse(CantSemanas) + 2; column++)
                         {
-                         
-                            migrantRange.ResetRowColumn(cont+1, column);
-                            migrantRange.Text = "Día" + (column - 1).ToString()+"  "+ DateSelected.Date.AddDays(column-2).ToString().Remove(10); ;
-                            migrantRange.ResetRowColumn(cont+2, column);
-                            migrantRange.Text = productoA.Semanas[column - 2].ReqBruto;
-                            migrantRange.ResetRowColumn(cont+3, column);
-                            migrantRange.Text = productoA.Semanas[column - 2].InventarioInicial;
-                            migrantRange.ResetRowColumn(cont+4, column);
-                            migrantRange.Text = productoA.Semanas[column - 2].ReqNeto;
-                            migrantRange.ResetRowColumn(cont+5, column);
-                            migrantRange.Text = productoA.Semanas[column - 2].LibOrden;
-                            migrantRange.ResetRowColumn(cont+6, column);
-                            migrantRange.Text = productoA.Semanas[column - 2].InvFinal;
+                        //Nueva celda
+                        migrantRange.ResetRowColumn(cont+1, column);
+                            migrantRange.Text = "Día" + (column - 1).ToString()+"  "+ DateSelected.Date.AddDays(column-2).ToString().Remove(10);
+                        //Estilo de la celda  migrantRange.ResetRowColumn(cont+1, column)
+                        migrantRange.CellStyle.ColorIndex = ExcelKnownColors.Pale_blue;
+                        migrantRange.CellStyle.Borders.LineStyle = ExcelLineStyle.Medium;
+                        if (!string.IsNullOrEmpty(productoA.Semanas[column - 2].LibOrden))
+                        {
+                            migrantRange.CellStyle.ColorIndex = ExcelKnownColors.Bright_green;
                         }
+                        //Nueva celda
+                        migrantRange.ResetRowColumn(cont+2, column);
+                            migrantRange.Text = productoA.Semanas[column - 2].ReqBruto;
+                        //Nueva celda
+                        migrantRange.ResetRowColumn(cont+3, column);
+                            migrantRange.Text = productoA.Semanas[column - 2].InventarioInicial;
+                        //Nueva celda
+                        migrantRange.ResetRowColumn(cont+4, column);
+                            migrantRange.Text = productoA.Semanas[column - 2].ReqNeto;
+                        //Nueva celda
+                        migrantRange.ResetRowColumn(cont+5, column);
+                            migrantRange.Text = productoA.Semanas[column - 2].LibOrden;
+                        //Estilo de la celda   migrantRange.ResetRowColumn(cont+5, column)
+                        if (!string.IsNullOrEmpty(productoA.Semanas[column - 2].LibOrden))
+                        {
+                            migrantRange.CellStyle.ColorIndex = ExcelKnownColors.Bright_green;
+                            migrantRange.CellStyle.Font.Bold = true;
+                        }
+                        //Nueva celda
+                        migrantRange.ResetRowColumn(cont+6, column);
+                            migrantRange.Text = productoA.Semanas[column - 2].InvFinal;
+
+                    }
                     cont = cont + 7;
                     worksheet.UsedRange.AutofitColumns();
                 }
@@ -729,6 +734,32 @@ namespace Guia1.ViewModels
               await DependencyService.Get<ISave>().SaveAndView(ProductoPrincipal.Nombre+".xlsx", "application/msexcel", stream);
 
                 await dialogService.ShowMessage("Mensaje", "El Producto se guardó como hoja de Excel en la carpeta MRP");
+            }
+        }
+
+        public ICommand EmailCommand
+        {
+            get
+            {
+                return new RelayCommand(Email);
+            }
+        }
+
+        private void Email()
+        {
+            var emailMessenger = CrossMessaging.Current.EmailMessenger;
+            if (emailMessenger.CanSendEmail && emailMessenger.CanSendEmailAttachments)
+            {
+                emailMessenger.SendEmail(DependencyService.Get<IEmail>().EmailMessage(ProductoPrincipal.Nombre));
+
+            }
+        }
+
+        public ICommand ReCalcularCommand
+        {
+            get
+            {
+                return new RelayCommand(ReCalcular);
             }
         }
         private void ReCalcular()

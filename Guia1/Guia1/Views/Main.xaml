@@ -19,7 +19,7 @@
                          Margin="10">
                 
             <StackLayout Orientation="Horizontal">
-                <Image Source="Agregar32.png" 
+                <Image Source="Agregar1.png" 
                        HorizontalOptions="Start"/>
                 <Button Text="Agregar Producto" 
                     Command="{Binding NavigateProductoCommand}"
@@ -29,7 +29,7 @@
 
             </StackLayout>
             <StackLayout Orientation="Horizontal">
-                <Image Source="Box32.png" 
+                <Image Source="Revisar.png" 
                        HorizontalOptions="Start"/>
                 <Button Text="Revisar Pedidos" 
                         Command="{Binding RevisarCommand}" 
@@ -38,7 +38,7 @@
                          VerticalOptions="CenterAndExpand"/>
             </StackLayout>
             <StackLayout Orientation="Horizontal">
-                <Image Source="Calcular32.png" 
+                <Image Source="calcular.png" 
                        HorizontalOptions="Start"/>
                 <Button Text="Calcular Pedidos" 
                     Command="{Binding NavigateCalcularCommand}"

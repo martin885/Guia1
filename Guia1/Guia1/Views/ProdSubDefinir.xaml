@@ -7,8 +7,8 @@
              x:Class="Guia1.Views.ProdSubDefinir">
     <!--Página para agregar un producto con sus subproductos-->
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Guardar" Icon="Save32.png" Command="{Binding GuardarCommand}" Order="Primary"/>
-        <ToolbarItem Text="Borrar" Icon="Delete32.png" Command="{Binding BorrarCommand}" Order="Primary"/>
+        <ToolbarItem Text="Guardar" Icon="Save1.png" Command="{Binding GuardarCommand}" Order="Primary"/>
+        <ToolbarItem Text="Borrar" Icon="Delete.png" Command="{Binding BorrarCommand}" Order="Primary"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content >
         <StackLayout >
@@ -30,7 +30,7 @@
                         <TapGestureRecognizer  Command="{Binding Borrar1ArtCommand}"/>
                     </Image.GestureRecognizers>
                 </Image>
-                <Image Source="Plus32.png">
+                <Image Source="Plus.png">
                     <Image.GestureRecognizers>
                         <TapGestureRecognizer  Command="{Binding AgregarCommand}"/>
                     </Image.GestureRecognizers>

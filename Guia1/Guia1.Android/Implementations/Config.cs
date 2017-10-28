@@ -1,24 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
+﻿using Guia1.Interfaces;
 using SQLite.Net.Interop;
 using Xamarin.Forms;
-using Guia1.Interfaces;
 
 [assembly: Dependency(typeof(Guia1.Droid.Implementations.Config))]
 
 
 namespace Guia1.Droid.Implementations
 {
- public   class Config : IConfig
+    public   class Config : IConfig
     {
         private string directoryDB;
         private ISQLitePlatform platform;

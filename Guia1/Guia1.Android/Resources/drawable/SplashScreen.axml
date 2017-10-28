@@ -8,7 +8,7 @@
   <item>
     <bitmap
       xmlns:android="http://schemas.android.com/apk/res/android"
-        android:src="@drawable/Box64"
+        android:src="@drawable/Organization"
         android:tileMode="disabled"
         android:gravity="center"
        android:layout_gravity="center"/>

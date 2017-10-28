@@ -14,7 +14,7 @@ namespace Guia1.Services
             await Application.Current.MainPage.DisplayAlert(
                 title,
                 messsage,
-                "Aceptar");
+                "Aceptar","Cancelar");
         }
     }
 }
